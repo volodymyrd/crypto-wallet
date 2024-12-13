@@ -21,7 +21,7 @@ pub enum Net {
 }
 
 pub struct Api {
-    client: Box<dyn Client>,
+    client: ClientType,
 }
 
 impl Api {
@@ -31,14 +31,27 @@ impl Api {
         }
     }
 
-    fn get_client(blockchain: Blockchain) -> Box<dyn Client> {
+    fn get_client(blockchain: Blockchain) -> ClientType {
         match blockchain {
-            Blockchain::Solana(net) => Box::new(Solana::new(net)),
+            Blockchain::Solana(net) => ClientType::Solana(Solana::new(net)),
         }
     }
 
     pub fn get_balance(&self, account: &str) -> ApiResult<u64> {
-        self.client.get_balance(&Account::from_str(account)?)
+        self.client.get_balance(account)
+    }
+}
+
+enum ClientType {
+    Solana(Solana),
+}
+
+impl ClientType {
+    pub fn get_balance(&self, account: &str) -> ApiResult<u64> {
+        let account = Account::from_str(account)?;
+        match self {
+            ClientType::Solana(solana) => solana.get_balance(&account),
+        }
     }
 }
 
@@ -72,9 +85,11 @@ mod tests {
     #[test]
     fn get_balance() {
         assert_eq!(
-            MockClient::new(Net::Test).get_balance(&Account::from_str(
-                "u62NqVqrWp2wE47R8STvCFGwN7XxCq6YcWuYcAwsAWo"
-            ).unwrap()).unwrap(),
+            MockClient::new(Net::Test)
+                .get_balance(
+                    &Account::from_str("u62NqVqrWp2wE47R8STvCFGwN7XxCq6YcWuYcAwsAWo").unwrap()
+                )
+                .unwrap(),
             12
         );
     }
