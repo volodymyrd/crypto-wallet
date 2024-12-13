@@ -1,7 +1,7 @@
-use crate::account::Pubkey;
 use crate::keypair::Keypair;
 use bip39::{Language, Mnemonic, MnemonicType, Seed};
-use std::fmt::{Formatter};
+use model::account::Pubkey;
+use std::fmt::Formatter;
 use std::{error, fmt};
 
 pub struct Wallet {

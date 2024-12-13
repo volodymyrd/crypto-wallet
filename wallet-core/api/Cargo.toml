@@ -1,13 +1,13 @@
 [package]
-name = "wallet"
+name = "api"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 repository.workspace = true
 
 [dependencies]
-ed25519-dalek.workspace = true
-tiny-bip39.workspace = true
+solana-client.workspace = true
+solana-sdk.workspace = true
 
 # internal
 model.workspace = true

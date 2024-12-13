@@ -1,6 +1,6 @@
-use crate::account::Pubkey;
 use ed25519_dalek::SecretKey;
 use std::{error};
+use model::account::Pubkey;
 
 /// A vanilla Ed25519 key pair.
 #[derive(Debug)]

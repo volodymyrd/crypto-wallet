@@ -11,4 +11,6 @@ pub(super) struct Cli {
 pub(super) enum Commands {
     /// Create a new wallet.
     New,
+    /// Get a wallet balance.
+    Balance { address: String },
 }

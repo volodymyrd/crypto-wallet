@@ -7,4 +7,8 @@ repository.workspace = true
 
 [dependencies]
 clap.workspace = true
+
+# internal
+api.workspace = true
+model.workspace = true
 wallet.workspace = true

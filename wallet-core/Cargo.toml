@@ -6,13 +6,17 @@ repository = "https://github.com/volodymyrd/crypto-wallet"
 
 [workspace]
 resolver = "2"
-members = ["cli", "wallet"]
+members = ["api", "cli", "model", "wallet"]
 
 [workspace.dependencies]
 bs58 = "0.5"
 clap = { version = "4.5", features = ["derive"] }
 ed25519-dalek = "2"
+solana-client = "2"
+solana-sdk = "2"
 tiny-bip39 = "2"
 
 # internal deps
+api = { path = "api" }
+model = { path = "model" }
 wallet = { path = "wallet" }
