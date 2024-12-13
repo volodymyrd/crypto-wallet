@@ -1,6 +1,6 @@
 use ed25519_dalek::SecretKey;
-use std::{error};
 use model::account::Pubkey;
+use std::error;
 
 /// A vanilla Ed25519 key pair.
 #[derive(Debug)]

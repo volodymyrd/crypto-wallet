@@ -1,2 +1,2 @@
-pub mod wallet;
 mod keypair;
+pub mod wallet;

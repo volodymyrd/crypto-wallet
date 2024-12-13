@@ -72,9 +72,11 @@ mod tests {
     #[test]
     fn get_balance() {
         assert_eq!(
-            MockClient::new(Net::Test).get_balance(&Account::from_str(
-                "u62NqVqrWp2wE47R8STvCFGwN7XxCq6YcWuYcAwsAWo"
-            ).unwrap()).unwrap(),
+            MockClient::new(Net::Test)
+                .get_balance(
+                    &Account::from_str("u62NqVqrWp2wE47R8STvCFGwN7XxCq6YcWuYcAwsAWo").unwrap()
+                )
+                .unwrap(),
             12
         );
     }
