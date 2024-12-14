@@ -19,7 +19,7 @@ pub(super) enum Commands {
     /// Get a wallet balance.
     Balance {
         blockchain: Blockchain,
-        net: Option<Net>,
         address: String,
+        net: Option<Net>,
     },
 }

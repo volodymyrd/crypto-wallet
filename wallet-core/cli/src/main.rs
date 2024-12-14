@@ -1,5 +1,5 @@
 use crate::cli::{Cli, Commands};
-use api::client::{Api};
+use api::client::Api;
 use clap::Parser;
 use mnemonic::WordCount;
 use std::error;
@@ -26,8 +26,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         }
         Some(Commands::Balance {
             blockchain,
-            net,
             address,
+            net,
         }) => {
             let api = Api::new(*blockchain, net.unwrap_or(Net::Dev));
             match api.get_balance(address) {
