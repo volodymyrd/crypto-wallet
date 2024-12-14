@@ -10,5 +10,7 @@ clap.workspace = true
 
 # internal
 api.workspace = true
-model.workspace = true
+mnemonic.workspace = true
+keypair.workspace = true
+types.workspace = true
 wallet.workspace = true

@@ -10,4 +10,4 @@ solana-client.workspace = true
 solana-sdk.workspace = true
 
 # internal
-model.workspace = true
+types.workspace = true

@@ -1,7 +1,8 @@
-use crate::{ApiResult, Client, Net};
-use model::account::Account;
+use crate::client::{ApiResult, Client};
 use solana_client::rpc_client::RpcClient;
 use solana_sdk::pubkey::Pubkey;
+use std::str::FromStr;
+use types::{Address, Net};
 
 pub(super) struct Solana {
     client: RpcClient,
@@ -19,9 +20,9 @@ impl Client for Solana {
         }
     }
 
-    fn get_balance(&self, account: &Account) -> ApiResult<u64> {
+    fn get_balance(&self, address: &Address) -> ApiResult<u64> {
         self.client
-            .get_balance(&Pubkey::from(account.address.get_key()))
+            .get_balance(&Pubkey::from_str(address)?)
             .map_err(|e| e.into())
     }
 }

@@ -12,6 +12,18 @@ pub enum WordCount {
     W24,
 }
 
+impl From<i32> for WordCount {
+    fn from(value: i32) -> Self {
+        match value {
+            15 => WordCount::W15,
+            18 => WordCount::W18,
+            21 => WordCount::W21,
+            24 => WordCount::W24,
+            _ => WordCount::W12,
+        }
+    }
+}
+
 impl From<WordCount> for MnemonicType {
     fn from(value: WordCount) -> Self {
         match value {
@@ -27,17 +39,6 @@ impl From<WordCount> for MnemonicType {
 #[derive(Clone)]
 pub struct Mnemonic {
     internal: bip39::Mnemonic,
-}
-
-impl fmt::Display for Mnemonic {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let phrase = self.seed_phrase();
-        let divider = String::from_utf8(vec![b'='; phrase.len()]).unwrap();
-        f.write_str(&format!(
-            "{}\nSave this seed phrase to recover your key:\n{}\n{}",
-            &divider, phrase, &divider
-        ))
-    }
 }
 
 impl Mnemonic {
@@ -57,12 +58,31 @@ impl Mnemonic {
         })
     }
 
+    pub fn len(&self) -> usize {
+        self.seed_phrase().len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.seed_phrase().is_empty()
+    }
+
     pub fn seed_phrase(&self) -> &str {
         self.internal.phrase()
     }
 
     pub fn seed(&self, passphrase: &str) -> Vec<u8> {
         Vec::from(Seed::new(&self.internal, passphrase).as_bytes())
+    }
+}
+
+impl fmt::Display for Mnemonic {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let phrase = self.seed_phrase();
+        let divider = String::from_utf8(vec![b'='; phrase.len()]).unwrap();
+        f.write_str(&format!(
+            "{}\nSave this seed phrase to recover your key:\n{}\n{}",
+            &divider, phrase, &divider
+        ))
     }
 }
 

@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use types::{Blockchain, Net};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -10,7 +11,15 @@ pub(super) struct Cli {
 #[derive(Subcommand)]
 pub(super) enum Commands {
     /// Create a new wallet.
-    New,
+    New {
+        word_count: Option<i32>,
+        passphrase: Option<String>,
+        lang_code: Option<String>,
+    },
     /// Get a wallet balance.
-    Balance { address: String },
+    Balance {
+        blockchain: Blockchain,
+        net: Option<Net>,
+        address: String,
+    },
 }

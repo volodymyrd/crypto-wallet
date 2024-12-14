@@ -6,7 +6,7 @@ repository = "https://github.com/volodymyrd/crypto-wallet"
 
 [workspace]
 resolver = "2"
-members = ["api", "cli", "model", "wallet"]
+members = ["api", "cli", "keypair", "mnemonic", "types", "wallet"]
 
 [workspace.dependencies]
 bs58 = "0.5"
@@ -18,5 +18,7 @@ tiny-bip39 = "2"
 
 # internal deps
 api = { path = "api" }
-model = { path = "model" }
+keypair = { path = "keypair" }
+mnemonic = { path = "mnemonic" }
+types = { path = "types" }
 wallet = { path = "wallet" }
