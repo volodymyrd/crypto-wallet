@@ -1,17 +1,12 @@
 use crate::bitcoin::BitcoinKeypair;
 use crate::solana::SolanaKeypair;
+use crate::Keypair;
 use mnemonic::{Mnemonic, WordCount};
 use std::collections::HashMap;
 use std::error::Error;
 use std::fmt;
 use std::fmt::{Display, Formatter};
-use std::str::from_utf8;
 use types::shared::{Address, Blockchain, Net};
-
-pub trait Keypair {
-    fn address(net: Net, seed: &[u8]) -> Result<Address, Box<dyn Error>>;
-    fn pk(net: Net, seed: &[u8]) -> Result<String, Box<dyn Error>>;
-}
 
 pub struct Account {
     net: Net,
@@ -42,12 +37,44 @@ impl Account {
 
     fn build(net: Net, mnemonic: Mnemonic, passphrase: &str) -> Result<Self, Box<dyn Error>> {
         let seed = mnemonic.seed(passphrase);
+        let key_pairs: HashMap<Blockchain, KeypairType> = HashMap::from([
+            (
+                Blockchain::Bitcoin,
+                KeypairType::Bitcoin(BitcoinKeypair::new(net, &seed)?),
+            ),
+            (
+                Blockchain::Solana,
+                KeypairType::Solana(SolanaKeypair::new(net, &seed)?),
+            ),
+        ]);
+
         Ok(Self {
             net,
             mnemonic,
-            addresses: Addresses::new(net, &seed)?,
-            keys: Keys::new(net, &seed)?,
+            addresses: Addresses::new(&key_pairs)?,
+            keys: Keys::new(&key_pairs)?,
         })
+    }
+}
+
+enum KeypairType {
+    Bitcoin(BitcoinKeypair),
+    Solana(SolanaKeypair),
+}
+
+impl Keypair for KeypairType {
+    fn address(&self) -> Result<Address, Box<dyn Error>> {
+        match self {
+            KeypairType::Bitcoin(keypair) => keypair.address(),
+            KeypairType::Solana(keypair) => keypair.address(),
+        }
+    }
+
+    fn pk(&self) -> Result<String, Box<dyn Error>> {
+        match self {
+            KeypairType::Bitcoin(keypair) => keypair.pk(),
+            KeypairType::Solana(keypair) => keypair.pk(),
+        }
     }
 }
 
@@ -80,19 +107,21 @@ impl Display for Account {
 struct Keys(HashMap<Blockchain, String>);
 
 impl Keys {
-    fn new(net: Net, seed: &[u8]) -> Result<Self, Box<dyn Error>> {
-        Ok(Self(HashMap::from([
-            (Blockchain::Bitcoin, BitcoinKeypair::pk(net, seed)?),
-            (Blockchain::Solana, SolanaKeypair::pk(net, seed)?),
-        ])))
+    fn new(key_pairs: &HashMap<Blockchain, KeypairType>) -> Result<Self, Box<dyn Error>> {
+        Ok(Self(
+            key_pairs
+                .iter()
+                .map(|(&k, v)| v.pk().map(|pk| (k, pk)))
+                .collect::<Result<_, _>>()?,
+        ))
     }
 }
 
 impl Display for Keys {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        self.0
-            .iter()
-            .collect::<Vec<_>>()
+        let mut sorted = self.0.iter().collect::<Vec<_>>();
+        sorted.sort_by_key(|(k, _)| *k);
+        sorted
             .iter()
             .try_for_each(|(k, v)| writeln!(f, "{}: {}", k, v))?;
         Ok(())
@@ -102,32 +131,23 @@ impl Display for Keys {
 struct Addresses(HashMap<Blockchain, Address>);
 
 impl Addresses {
-    fn new(net: Net, seed: &[u8]) -> Result<Self, Box<dyn Error>> {
-        Ok(Self(HashMap::from([
-            (Blockchain::Bitcoin, BitcoinKeypair::address(net, seed)?),
-            (Blockchain::Solana, SolanaKeypair::address(net, seed)?),
-        ])))
+    fn new(key_pairs: &HashMap<Blockchain, KeypairType>) -> Result<Self, Box<dyn Error>> {
+        Ok(Self(
+            key_pairs
+                .iter()
+                .map(|(&k, v)| v.address().map(|adr| (k, adr)))
+                .collect::<Result<_, _>>()?,
+        ))
     }
 }
 
 impl Display for Addresses {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        self.0
-            .iter()
-            .collect::<Vec<_>>()
+        let mut sorted = self.0.iter().collect::<Vec<_>>();
+        sorted.sort_by_key(|(k, _)| *k);
+        sorted
             .iter()
             .try_for_each(|(k, v)| writeln!(f, "{}: {}", k, v))?;
         Ok(())
     }
-}
-
-const MAX_BASE58_LEN: usize = 64;
-
-pub(crate) fn write_as_base58(key: Vec<u8>) -> String {
-    let mut out = [0u8; MAX_BASE58_LEN];
-    let out_slice: &mut [u8] = &mut out;
-    // This will never fail because the only possible error is BufferTooSmall,
-    // and we will never call it with too small a buffer.
-    let len = bs58::encode(key).onto(out_slice).unwrap();
-    from_utf8(&out[..len]).unwrap().to_string()
 }

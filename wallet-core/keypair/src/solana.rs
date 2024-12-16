@@ -1,4 +1,4 @@
-use crate::account::{write_as_base58, Keypair};
+use crate::{write_as_base58, Keypair};
 use ed25519_dalek::SecretKey;
 use std::error::Error;
 use types::shared::{Address, Net};
@@ -8,25 +8,27 @@ use types::shared::{Address, Net};
 pub(super) struct SolanaKeypair(ed25519_dalek::SigningKey);
 
 impl Keypair for SolanaKeypair {
-    fn address(_: Net, seed: &[u8]) -> Result<Address, Box<dyn Error>> {
-        let keypair = SolanaKeypair::from_seed(seed)?;
-        Ok(keypair.address())
+    fn address(&self) -> Result<Address, Box<dyn Error>> {
+        Ok(self.address())
     }
 
-    fn pk(_: Net, seed: &[u8]) -> Result<String, Box<dyn Error>> {
-        let keypair = SolanaKeypair::from_seed(seed)?;
-        Ok(keypair.pk())
+    fn pk(&self) -> Result<String, Box<dyn Error>> {
+        Ok(self.pk())
     }
 }
 
 impl SolanaKeypair {
-    fn from_seed(seed: &[u8]) -> Result<SolanaKeypair, Box<dyn Error>> {
+    pub fn new(_: Net, seed: &[u8]) -> Result<Self, Box<dyn Error>> {
+        Self::from_seed(seed)
+    }
+
+    fn from_seed(seed: &[u8]) -> Result<Self, Box<dyn Error>> {
         if seed.len() < ed25519_dalek::SECRET_KEY_LENGTH {
             return Err("Seed is too short".into());
         }
         let secret_key = SecretKey::try_from(&seed[..ed25519_dalek::SECRET_KEY_LENGTH])?;
         let signing_key = ed25519_dalek::SigningKey::from_bytes(&secret_key);
-        Ok(SolanaKeypair(signing_key))
+        Ok(Self(signing_key))
     }
 
     fn address(&self) -> Address {

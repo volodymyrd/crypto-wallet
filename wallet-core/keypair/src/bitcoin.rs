@@ -1,8 +1,7 @@
-use crate::account::{write_as_base58, Keypair};
+use crate::{write_as_base58, Keypair};
 use bitcoin::bip32::{DerivationPath, Xpriv};
 use bitcoin::hashes::{sha256, Hash};
 use bitcoin::{secp256k1, CompressedPublicKey, Network};
-use std::error;
 use std::error::Error;
 use std::str::FromStr;
 use types::shared::{Address, Net};
@@ -11,29 +10,27 @@ use types::shared::{Address, Net};
 pub(super) struct BitcoinKeypair(Network, secp256k1::SecretKey, secp256k1::PublicKey);
 
 impl Keypair for BitcoinKeypair {
-    fn address(net: Net, seed: &[u8]) -> Result<Address, Box<dyn Error>> {
-        let keypair = BitcoinKeypair::from_seed(convert(net), seed)?;
-        Ok(keypair.address())
+    fn address(&self) -> Result<Address, Box<dyn Error>> {
+        Ok(self.address())
     }
 
-    fn pk(net: Net, seed: &[u8]) -> Result<String, Box<dyn Error>> {
-        let keypair = BitcoinKeypair::from_seed(convert(net), seed)?;
-        Ok(keypair.secret_key_to_wif(true))
+    fn pk(&self) -> Result<String, Box<dyn Error>> {
+        Ok(self.secret_key_to_wif(true))
     }
 }
 
 impl BitcoinKeypair {
-    fn from_seed(network: Network, seed: &[u8]) -> Result<BitcoinKeypair, Box<dyn error::Error>> {
+    pub fn new(net: Net, seed: &[u8]) -> Result<Self, Box<dyn Error>> {
+        Self::from_seed(convert(net), seed)
+    }
+
+    fn from_seed(network: Network, seed: &[u8]) -> Result<Self, Box<dyn Error>> {
         let secp = bitcoin::secp256k1::Secp256k1::new();
         let master_key = Xpriv::new_master(network, seed).unwrap();
         let derivation_path = DerivationPath::from_str("m/84'/0'/0'/0/0").unwrap();
         let child_key = master_key.derive_priv(&secp, &derivation_path).unwrap();
         let private_key = child_key.private_key;
-        Ok(BitcoinKeypair(
-            network,
-            private_key,
-            private_key.public_key(&secp),
-        ))
+        Ok(Self(network, private_key, private_key.public_key(&secp)))
     }
 
     fn address(&self) -> Address {
