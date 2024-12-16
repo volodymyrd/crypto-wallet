@@ -12,9 +12,17 @@ pub(super) struct Cli {
 pub(super) enum Commands {
     /// Create a new wallet.
     New {
+        net: Option<Net>,
         word_count: Option<i32>,
         passphrase: Option<String>,
         lang_code: Option<String>,
+    },
+    /// Get a private key
+    Pk {
+        net: Net,
+        language_code: String,
+        seed_phrase: String,
+        passphrase: Option<String>,
     },
     /// Get a wallet balance.
     Balance {

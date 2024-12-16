@@ -6,6 +6,7 @@ rust-version.workspace = true
 repository.workspace = true
 
 [dependencies]
+bitcoin.workspace = true
 bs58.workspace = true
 ed25519-dalek.workspace = true
 

@@ -2,6 +2,17 @@
 
 Crypto Wallet
 
+## Bitcoin
+
+- Install [bitcoincore](https://bitcoincore.org/en/download/)
+  For MacOS (brew install bitcoin)
+
+```
+bitcoin-cli --version
+```
+
+
+
 ## Solana
 
 ### Clusters

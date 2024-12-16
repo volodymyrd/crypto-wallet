@@ -1,22 +1,26 @@
-use crate::account::Keypair;
+use crate::account::{write_as_base58, Keypair};
 use ed25519_dalek::SecretKey;
-use std::error;
-use std::str::from_utf8;
-use types::Address;
+use std::error::Error;
+use types::{Address, Net};
 
 /// A vanilla Ed25519 key pair.
 #[derive(Debug)]
 pub(super) struct SolanaKeypair(ed25519_dalek::SigningKey);
 
 impl Keypair for SolanaKeypair {
-    fn address(seed: &[u8]) -> Result<Address, Box<dyn error::Error>> {
+    fn address(_: Net, seed: &[u8]) -> Result<Address, Box<dyn Error>> {
         let keypair = SolanaKeypair::from_seed(seed)?;
         Ok(keypair.address())
+    }
+
+    fn pk(_: Net, seed: &[u8]) -> Result<String, Box<dyn Error>> {
+        let keypair = SolanaKeypair::from_seed(seed)?;
+        Ok(keypair.pk())
     }
 }
 
 impl SolanaKeypair {
-    fn from_seed(seed: &[u8]) -> Result<SolanaKeypair, Box<dyn error::Error>> {
+    fn from_seed(seed: &[u8]) -> Result<SolanaKeypair, Box<dyn Error>> {
         if seed.len() < ed25519_dalek::SECRET_KEY_LENGTH {
             return Err("Seed is too short".into());
         }
@@ -26,16 +30,10 @@ impl SolanaKeypair {
     }
 
     fn address(&self) -> Address {
-        write_as_base58(self.0.verifying_key().to_bytes())
+        write_as_base58(self.0.verifying_key().to_bytes().to_vec())
     }
-}
-const MAX_BASE58_LEN: usize = 44;
 
-fn write_as_base58(key: [u8; 32]) -> String {
-    let mut out = [0u8; MAX_BASE58_LEN];
-    let out_slice: &mut [u8] = &mut out;
-    // This will never fail because the only possible error is BufferTooSmall,
-    // and we will never call it with too small a buffer.
-    let len = bs58::encode(key).onto(out_slice).unwrap();
-    from_utf8(&out[..len]).unwrap().to_string()
+    fn pk(&self) -> String {
+        write_as_base58(self.0.to_bytes().to_vec())
+    }
 }
