@@ -11,4 +11,5 @@ bs58.workspace = true
 ed25519-dalek.workspace = true
 
 # internal
+mnemonic.workspace = true
 types.workspace = true

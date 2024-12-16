@@ -9,6 +9,5 @@ repository.workspace = true
 
 # internal
 keypair.workspace = true
-mnemonic.workspace = true
 types.workspace = true
 

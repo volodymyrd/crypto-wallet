@@ -2083,6 +2083,7 @@ dependencies = [
  "bitcoin",
  "bs58",
  "ed25519-dalek 2.1.1",
+ "mnemonic",
  "types",
 ]
 
@@ -5404,7 +5405,6 @@ name = "wallet"
 version = "0.0.1"
 dependencies = [
  "keypair",
- "mnemonic",
  "types",
 ]
 
@@ -5415,7 +5415,6 @@ dependencies = [
  "api",
  "clap",
  "keypair",
- "mnemonic",
  "types",
  "wallet",
 ]

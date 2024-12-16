@@ -1,7 +1,6 @@
 use crate::cli::{Cli, Commands};
 use api::client::Api;
 use clap::Parser;
-use mnemonic::WordCount;
 use std::error;
 use types::Net;
 use wallet::wallet::Wallet;
@@ -13,32 +12,36 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 
     match &cli.command {
         Some(Commands::New {
+            name,
             net,
+            language_code,
             word_count,
             passphrase,
-            lang_code,
         }) => {
             let wallet = Wallet::new(
+                name,
                 net.unwrap_or(Net::Dev),
-                WordCount::from(word_count.unwrap_or(12)),
+                &language_code.clone().unwrap_or("en".to_string()),
+                word_count.unwrap_or(12),
                 &passphrase.clone().unwrap_or("".to_string()),
-                &lang_code.clone().unwrap_or("en".to_string()),
             )?;
             println!("{wallet}")
         }
-        Some(Commands::Pk {
+        Some(Commands::Restore {
+            name,
             net,
             language_code,
             seed_phrase,
             passphrase,
         }) => {
-            let wallet = Wallet::restore(
+            let wallet = Wallet::restore_from_seed(
+                name,
                 *net,
                 &language_code.clone(),
                 &seed_phrase.clone(),
                 &passphrase.clone().unwrap_or("".to_string()),
             )?;
-            let _ = wallet.pk();
+            println!("{wallet}")
         }
         Some(Commands::Balance {
             blockchain,

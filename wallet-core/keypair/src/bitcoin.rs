@@ -11,7 +11,7 @@ use types::{Address, Net};
 pub(super) struct BitcoinKeypair(Network, secp256k1::SecretKey, secp256k1::PublicKey);
 
 impl Keypair for BitcoinKeypair {
-    fn address(net: Net, seed: &[u8]) -> Result<Address, Box<dyn error::Error>> {
+    fn address(net: Net, seed: &[u8]) -> Result<Address, Box<dyn Error>> {
         let keypair = BitcoinKeypair::from_seed(convert(net), seed)?;
         Ok(keypair.address())
     }

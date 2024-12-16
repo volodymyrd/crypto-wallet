@@ -12,13 +12,15 @@ pub(super) struct Cli {
 pub(super) enum Commands {
     /// Create a new wallet.
     New {
+        name: String,
         net: Option<Net>,
+        language_code: Option<String>,
         word_count: Option<i32>,
         passphrase: Option<String>,
-        lang_code: Option<String>,
     },
-    /// Get a private key
-    Pk {
+    /// Restore a wallet from a seed phrase.
+    Restore {
+        name: String,
         net: Net,
         language_code: String,
         seed_phrase: String,

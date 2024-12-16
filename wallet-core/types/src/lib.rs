@@ -62,6 +62,21 @@ pub enum Net {
     Local,
 }
 
+impl Display for Net {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Net::Main => "Main-net",
+                Net::Test => "Test-net",
+                Net::Dev => "Dev-net",
+                Net::Local => "Local-net",
+            }
+        )
+    }
+}
+
 #[derive(Debug)]
 pub struct ParseNetError;
 
