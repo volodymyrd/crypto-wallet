@@ -2,7 +2,7 @@ use crate::cli::{Cli, Commands};
 use api::client::Api;
 use clap::Parser;
 use std::error;
-use types::Net;
+use types::shared::Net;
 use wallet::wallet::Wallet;
 
 mod cli;

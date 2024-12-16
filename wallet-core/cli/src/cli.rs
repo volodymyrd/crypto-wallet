@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use types::{Blockchain, Net};
+use types::shared::{Blockchain, Net};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]

@@ -1,6 +1,6 @@
 use crate::solana::Solana;
 use std::error::Error;
-use types::{Address, Blockchain, Net};
+use types::shared::{Address, Blockchain, Net};
 
 pub type ApiResult<T> = Result<T, Box<dyn Error>>;
 

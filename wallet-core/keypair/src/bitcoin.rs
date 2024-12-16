@@ -5,7 +5,7 @@ use bitcoin::{secp256k1, CompressedPublicKey, Network};
 use std::error;
 use std::error::Error;
 use std::str::FromStr;
-use types::{Address, Net};
+use types::shared::{Address, Net};
 
 #[derive(Debug)]
 pub(super) struct BitcoinKeypair(Network, secp256k1::SecretKey, secp256k1::PublicKey);

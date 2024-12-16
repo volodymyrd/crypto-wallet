@@ -2,7 +2,7 @@ use crate::client::{ApiResult, Client};
 use solana_client::rpc_client::RpcClient;
 use solana_sdk::pubkey::Pubkey;
 use std::str::FromStr;
-use types::{Address, Net};
+use types::shared::{Address, Net};
 
 pub(super) struct Solana {
     client: RpcClient,

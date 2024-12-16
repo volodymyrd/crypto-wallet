@@ -1,7 +1,7 @@
 use crate::account::{write_as_base58, Keypair};
 use ed25519_dalek::SecretKey;
 use std::error::Error;
-use types::{Address, Net};
+use types::shared::{Address, Net};
 
 /// A vanilla Ed25519 key pair.
 #[derive(Debug)]

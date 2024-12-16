@@ -6,7 +6,7 @@ use std::error::Error;
 use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::str::from_utf8;
-use types::{Address, Blockchain, Net};
+use types::shared::{Address, Blockchain, Net};
 
 pub trait Keypair {
     fn address(net: Net, seed: &[u8]) -> Result<Address, Box<dyn Error>>;

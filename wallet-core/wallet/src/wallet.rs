@@ -1,7 +1,8 @@
 use keypair::account::Account;
 use std::fmt::Formatter;
 use std::{error, fmt};
-use types::Net;
+use types::constants::{TEXT_STYLE_BOLD, TEXT_STYLE_RESET, TEXT_STYLE_UNDERLINED};
+use types::shared::Net;
 
 pub struct Wallet {
     name: String,
@@ -10,7 +11,11 @@ pub struct Wallet {
 
 impl fmt::Display for Wallet {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        writeln!(f, "Wallet: {}", self.name)?;
+        writeln!(
+            f,
+            "{}{}Wallet{}: {}",
+            TEXT_STYLE_BOLD, TEXT_STYLE_UNDERLINED, TEXT_STYLE_RESET, self.name
+        )?;
         writeln!(f, "{}", self.account)
     }
 }
